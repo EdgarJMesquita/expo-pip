@@ -1,7 +1,7 @@
 {
   "platforms": ["android"],
   "ios": {
-    "modules": ["ExpoPipModule"]
+    "modules": []
   },
   "android": {
     "modules": ["expo.modules.pip.ExpoPipModule"]

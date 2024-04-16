@@ -1,7 +1,7 @@
 {
   "name": "expo-pip",
   "version": "0.1.0",
-  "description": "Picture In Picture for Android",
+  "description": "A library that provides access to Picture In Picture API for Android only",
   "main": "build/index.js",
   "types": "build/index.d.ts",
   "scripts": {
@@ -19,7 +19,9 @@
     "react-native",
     "expo",
     "expo-pip",
-    "ExpoPip"
+    "ExpoPip",
+    "picture in picture",
+    "pip"
   ],
   "repository": "https://github.com/EdgarJMesquita/expo-pip",
   "bugs": {

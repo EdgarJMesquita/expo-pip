@@ -1,6 +1,8 @@
 # expo-pip
 
-Picture In Picture for Android
+A library that provides access to Picture In Picture API for Android only.
+
+_expo-pip_ is not available in Expo Go, learn more about [development builds](https://docs.expo.dev/develop/development-builds/introduction/).
 
 # API documentation
 
@@ -21,27 +23,11 @@ For bare React Native projects, you must ensure that you have [installed and con
 npx expo install expo-pip
 ```
 
+# Demo
+
+<a href="https://github.com/EdgarJMesquita/expo-pip"><img src="./docs/assets/demo.gif" width="360"></a>
+
 # Usage
-
-### Import expo-pip
-
-```js
-import * as ExpoPip from "expo-pip";
-```
-
-### useIsInPipe hook
-
-```js
-const { isInPipMode } = ExpoPip.useIsInPip();
-```
-
-### setAutomaticEnterEnabled
-
-```js
-ExpoPip.setAutoEnterEnabled(true);
-```
-
-### Full example
 
 ```js
 import * as ExpoPip from "expo-pip";
@@ -89,6 +75,32 @@ const styles = StyleSheet.create({
   },
 });
 ```
+
+# API
+
+```js
+import * as ExpoPip from "expo-pip";
+```
+
+### Receive updates about Picture In Picture Mode status
+
+```js
+const { isInPipMode } = ExpoPip.useIsInPip();
+```
+
+### Enter and exit auto enter mode
+
+```js
+ExpoPip.setAutoEnterEnabled(true);
+```
+
+### Enter Picture In Picture mode with desired size
+
+```js
+ExpoPip.enterPipMode({ width: 200, height: 300 });
+```
+
+Params are opcional. Defaults values are 200 width and 300 height.
 
 # Contributing
 
