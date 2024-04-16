@@ -28,7 +28,6 @@
   "author": "EdgarJMesquita <edgaroboe@outlook.com> (https://github.com/EdgarJMesquita)",
   "license": "MIT",
   "homepage": "https://github.com/EdgarJMesquita/expo-pip#readme",
-  "dependencies": {},
   "devDependencies": {
     "@types/react": "^18.0.25",
     "expo-module-scripts": "^3.4.1",

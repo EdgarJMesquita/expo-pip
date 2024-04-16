@@ -1,26 +1,35 @@
-import { NativeModulesProxy, EventEmitter, Subscription } from 'expo-modules-core';
+import ExpoPipModule from "./ExpoPipModule";
+import { useEffect, useState } from "react";
+import { AppState } from "react-native";
+import { EnterPipModeProps } from "./ExpoPip.types";
 
-// Import the native module. On web, it will be resolved to ExpoPip.web.ts
-// and on native platforms to ExpoPip.ts
-import ExpoPipModule from './ExpoPipModule';
-import ExpoPipView from './ExpoPipView';
-import { ChangeEventPayload, ExpoPipViewProps } from './ExpoPip.types';
-
-// Get the native constant value.
-export const PI = ExpoPipModule.PI;
-
-export function hello(): string {
-  return ExpoPipModule.hello();
+export function isInPipMode(): boolean {
+  return ExpoPipModule.isInPipMode();
 }
 
-export async function setValueAsync(value: string) {
-  return await ExpoPipModule.setValueAsync(value);
+export function enterPipMode(props?: EnterPipModeProps) {
+  const defaultParams = {
+    width: 200,
+    height: 300,
+  };
+
+  props ||= defaultParams;
+
+  ExpoPipModule.enterPipMode(props.width, props.height);
 }
 
-const emitter = new EventEmitter(ExpoPipModule ?? NativeModulesProxy.ExpoPip);
-
-export function addChangeListener(listener: (event: ChangeEventPayload) => void): Subscription {
-  return emitter.addListener<ChangeEventPayload>('onChange', listener);
+export function setAutoEnterEnabled(isAutomatic: boolean) {
+  ExpoPipModule.setAutoEnterEnabled(isAutomatic);
 }
 
-export { ExpoPipView, ExpoPipViewProps, ChangeEventPayload };
+export function useIsInPip() {
+  const [isInPipMode, setInPipMode] = useState(false);
+
+  useEffect(() => {
+    AppState.addEventListener("change", (event) => {
+      setInPipMode(ExpoPipModule.isInPipMode());
+    });
+  }, []);
+
+  return { isInPipMode };
+}

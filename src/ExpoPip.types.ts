@@ -1,7 +1,4 @@
-export type ChangeEventPayload = {
-  value: string;
-};
-
-export type ExpoPipViewProps = {
-  name: string;
+export type EnterPipModeProps = {
+  width: number;
+  height: number;
 };
