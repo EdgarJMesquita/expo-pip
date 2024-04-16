@@ -1,0 +1,42 @@
+{
+  "name": "expo-pip",
+  "version": "0.1.0",
+  "description": "Picture In Picture for Android",
+  "main": "build/index.js",
+  "types": "build/index.d.ts",
+  "scripts": {
+    "build": "expo-module build",
+    "clean": "expo-module clean",
+    "lint": "expo-module lint",
+    "test": "expo-module test",
+    "prepare": "expo-module prepare",
+    "prepublishOnly": "expo-module prepublishOnly",
+    "expo-module": "expo-module",
+    "open:ios": "open -a \"Xcode\" example/ios",
+    "open:android": "open -a \"Android Studio\" example/android"
+  },
+  "keywords": [
+    "react-native",
+    "expo",
+    "expo-pip",
+    "ExpoPip"
+  ],
+  "repository": "https://github.com/EdgarJMesquita/expo-pip",
+  "bugs": {
+    "url": "https://github.com/EdgarJMesquita/expo-pip/issues"
+  },
+  "author": "EdgarJMesquita <edgaroboe@outlook.com> (https://github.com/EdgarJMesquita)",
+  "license": "MIT",
+  "homepage": "https://github.com/EdgarJMesquita/expo-pip#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/react": "^18.0.25",
+    "expo-module-scripts": "^3.4.1",
+    "expo-modules-core": "^1.11.12"
+  },
+  "peerDependencies": {
+    "expo": "*",
+    "react": "*",
+    "react-native": "*"
+  }
+}
