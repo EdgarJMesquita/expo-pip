@@ -1,13 +1,14 @@
-import ExpoPipModule from "./ExpoPipModule";
 import { useEffect, useState } from "react";
 import { AppState } from "react-native";
-import { EnterPipModeProps } from "./ExpoPip.types";
+
+import { AspectRatioProps } from "./ExpoPip.types";
+import ExpoPipModule from "./ExpoPipModule";
 
 export function isInPipMode(): boolean {
   return ExpoPipModule.isInPipMode();
 }
 
-export function enterPipMode(props?: EnterPipModeProps) {
+export function enterPipMode(props?: AspectRatioProps) {
   const defaultParams = {
     width: 200,
     height: 300,
@@ -16,6 +17,10 @@ export function enterPipMode(props?: EnterPipModeProps) {
   props ||= defaultParams;
 
   ExpoPipModule.enterPipMode(props.width, props.height);
+}
+
+export function setAspectRatio({ width, height }: AspectRatioProps) {
+  ExpoPipModule.setAspectRatio(width, height);
 }
 
 export function setAutoEnterEnabled(isAutomatic: boolean) {

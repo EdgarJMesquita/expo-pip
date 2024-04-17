@@ -14,7 +14,7 @@ export default function App() {
           <Button
             onPress={() =>
               ExpoPip.enterPipMode({
-                width: 300,
+                width: 200,
                 height: 300,
               })
             }

@@ -27,6 +27,14 @@ class ExpoPipModule : Module() {
       }
     }
 
+    Function("setAspectRatio"){ width:Int, height:Int ->
+      val pictureInPictureParamsBuilder = PictureInPictureParams.Builder()
+      val ratio = Rational(width, height)
+      pictureInPictureParamsBuilder.setAspectRatio(ratio)
+      appContext.currentActivity?.setPictureInPictureParams(pictureInPictureParamsBuilder.build())
+
+    }
+
     Function("enterPipMode") { width:Int?, height:Int? ->
       if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
         val ratWidth = width ?: 200
@@ -36,7 +44,7 @@ class ExpoPipModule : Module() {
 
         val pictureInPictureParamsBuilder = PictureInPictureParams.Builder()
 
-        pictureInPictureParamsBuilder.setAspectRatio(ratio).build()
+        pictureInPictureParamsBuilder.setAspectRatio(ratio)
 
         appContext.currentActivity?.enterPictureInPictureMode(pictureInPictureParamsBuilder.build())
       }

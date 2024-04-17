@@ -94,6 +94,12 @@ const { isInPipMode } = ExpoPip.useIsInPip();
 ExpoPip.setAutoEnterEnabled(true);
 ```
 
+### Set desired aspect ratio
+
+```js
+ExpoPip.setAspectRatio({ width: 200, height: 300 });
+```
+
 ### Enter Picture In Picture mode with desired size
 
 ```js
