@@ -106,7 +106,7 @@ ExpoPip.setAspectRatio({ width: 200, height: 300 });
 ExpoPip.enterPipMode({ width: 200, height: 300 });
 ```
 
-Params are opcional. Defaults values are 200 width and 300 height.
+Params are optional. Defaults values are 200 width and 300 height.
 
 # Contributing
 
