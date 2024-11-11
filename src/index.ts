@@ -1,7 +1,7 @@
 import { EventEmitter, Subscription } from "expo-modules-core";
 import { useEffect, useState } from "react";
 
-import { PictureInPictureParams } from "./ExpoPip.types";
+import { AspectRatioProps, PictureInPictureParams } from "./ExpoPip.types";
 import ExpoPipModule from "./ExpoPipModule";
 
 const emitter = new EventEmitter(ExpoPipModule);
@@ -45,6 +45,27 @@ export function useIsInPip() {
   }, [setInPipMode]);
 
   return { isInPipMode };
+}
+
+/**
+ *
+ * @deprecated use `setPictureInPictureParams()`
+ */
+export function setAspectRatio({ height, width }: AspectRatioProps) {
+  setPictureInPictureParams({
+    width,
+    height,
+  });
+}
+
+/**
+ *
+ * @deprecated use `setPictureInPictureParams()`
+ */
+export function setAutoEnterEnabled(autoEnterEnabled: boolean) {
+  setPictureInPictureParams({
+    autoEnterEnabled,
+  });
 }
 
 export * from "./ExpoPip.types";

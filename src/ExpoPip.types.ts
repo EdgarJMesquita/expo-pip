@@ -53,3 +53,11 @@ export type PictureInPictureParams = {
    */
   sourceRectHint?: SourceRectHint;
 };
+
+/**
+ * @deprecated use `PictureInPictureParams`
+ */
+export type AspectRatioProps = {
+  width: number;
+  height: number;
+};
