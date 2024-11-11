@@ -1,53 +1,104 @@
 package expo.modules.pip
 
 import android.app.PictureInPictureParams
+import android.graphics.Rect
 import android.os.Build
+import android.util.Log
 import android.util.Rational
+import androidx.core.os.bundleOf
 import expo.modules.kotlin.modules.Module
 import expo.modules.kotlin.modules.ModuleDefinition
 
+const val moduleName = "ExpoPip"
+
 class ExpoPipModule : Module() {
-  override fun definition() = ModuleDefinition {
+    override fun definition() = ModuleDefinition {
 
-    Name("ExpoPip")
+        Name(moduleName)
 
-    Function("isInPipMode"){
-      if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-        return@Function appContext.currentActivity?.isInPictureInPictureMode
-      } else {
-        return@Function false
-      }
+        Events("onPictureInPictureModeChanged")
+
+        Function<Boolean>("isInPipMode", this@ExpoPipModule::isInPipMode)
+
+        Function("setPictureInPictureParams", this@ExpoPipModule::setPictureInPictureParams)
+
+        Function("enterPipMode", this@ExpoPipModule::enterPipMode)
+
+        OnActivityEntersForeground(this@ExpoPipModule::sendPictureInPictureModeChanged)
+
+        OnActivityEntersBackground(this@ExpoPipModule::sendPictureInPictureModeChanged)
     }
 
-    Function("setAutoEnterEnabled"){ isAutomatic:Boolean ->
-      val pictureInPictureParamsBuilder = PictureInPictureParams.Builder()
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-        pictureInPictureParamsBuilder.setAutoEnterEnabled(isAutomatic)
-        appContext.currentActivity?.setPictureInPictureParams(pictureInPictureParamsBuilder.build())
-      }
+    private fun buildPictureInPictureParams(options: ParamsRecord): PictureInPictureParams? {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val pictureInPictureParamsBuilder = PictureInPictureParams.Builder()
+
+            options.width?.let { width ->
+                options.height?.let { height ->
+                    val ratio = Rational(width, height)
+                    pictureInPictureParamsBuilder.setAspectRatio(ratio)
+                }
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                options.title?.let(pictureInPictureParamsBuilder::setTitle)
+                options.subtitle?.let(pictureInPictureParamsBuilder::setSubtitle)
+            }
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                options.seamlessResizeEnabled?.let(pictureInPictureParamsBuilder::setSeamlessResizeEnabled)
+                options.autoEnterEnabled?.let(pictureInPictureParamsBuilder::setAutoEnterEnabled)
+            }
+
+            options.sourceRectHint?.let {
+                val rect = Rect(it.left,it.top, it.right,it.bottom)
+                Log.d("ExpoPip", rect.toString())
+                pictureInPictureParamsBuilder.setSourceRectHint(rect)
+            }
+
+            return pictureInPictureParamsBuilder.build()
+        }
+        return null
     }
 
-    Function("setAspectRatio"){ width:Int, height:Int ->
-      val pictureInPictureParamsBuilder = PictureInPictureParams.Builder()
-      val ratio = Rational(width, height)
-      pictureInPictureParamsBuilder.setAspectRatio(ratio)
-      appContext.currentActivity?.setPictureInPictureParams(pictureInPictureParamsBuilder.build())
+    private fun setPictureInPictureParams(options: ParamsRecord) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val pictureInPictureParamsBuilder = buildPictureInPictureParams(options)
 
+            pictureInPictureParamsBuilder?.let {
+                appContext.currentActivity?.setPictureInPictureParams(it)
+            }
+        }
     }
 
-    Function("enterPipMode") { width:Int?, height:Int? ->
-      if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-        val ratWidth = width ?: 200
-        val ratHeight = height ?: 300
-
-        val ratio = Rational(ratWidth, ratHeight)
-
-        val pictureInPictureParamsBuilder = PictureInPictureParams.Builder()
-
-        pictureInPictureParamsBuilder.setAspectRatio(ratio)
-
-        appContext.currentActivity?.enterPictureInPictureMode(pictureInPictureParamsBuilder.build())
-      }
+    private fun sendPictureInPictureModeChanged() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val isInPictureInPictureMode =
+                appContext.currentActivity?.isInPictureInPictureMode ?: false
+            this@ExpoPipModule.sendEvent(
+                "onPictureInPictureModeChanged",
+                bundleOf("isInPictureInPictureMode" to isInPictureInPictureMode)
+            )
+        }
     }
-  }
+
+    private fun enterPipMode(options: ParamsRecord) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            val pictureInPictureParams = buildPictureInPictureParams(options)
+
+            pictureInPictureParams?.let {
+                appContext.currentActivity?.enterPictureInPictureMode(it)
+            }
+
+        }
+    }
+
+    private fun isInPipMode(): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            appContext.currentActivity?.isInPictureInPictureMode == true
+        } else {
+            false
+        }
+    }
 }

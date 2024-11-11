@@ -9,13 +9,16 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "date-fns": "^4.1.0",
     "expo": "~50.0.14",
     "react": "18.2.0",
-    "react-native": "0.73.6"
+    "react-native": "0.73.6",
+    "react-native-background-timer": "^2.4.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@types/react": "~18.2.45",
+    "@types/react-native-background-timer": "^2.0.2",
     "typescript": "^5.1.3"
   },
   "private": true,

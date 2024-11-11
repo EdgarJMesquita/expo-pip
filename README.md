@@ -25,7 +25,7 @@ npx expo install expo-pip
 
 # Demo
 
-<a href="https://github.com/EdgarJMesquita/expo-pip"><img src="./docs/assets/demo.gif" width="360"></a>
+<a href="https://github.com/EdgarJMesquita/expo-pip"><img src="./docs/assets/new-demo.gif" width="360"></a>
 
 # Usage
 
@@ -50,13 +50,15 @@ export default function App() {
                 height: 300,
               })
             }
-            title="Go to Picture In Picture Mode"
+            title="Enter Pip Mode"
           />
           <Button
             onPress={() => {
               const newValue = !automaticEnterEnabled;
               setAutomaticEnterEnabled(newValue);
-              ExpoPip.setAutoEnterEnabled(newValue);
+              ExpoPip.setPictureInPictureParams({
+                autoEnterEnabled: newValue,
+              });
             }}
             title={`Toggle automaticEnter: ${automaticEnterEnabled ? "on" : "off"}`}
           />
@@ -82,31 +84,76 @@ const styles = StyleSheet.create({
 import * as ExpoPip from "expo-pip";
 ```
 
+## Methods
+
+### `setPictureInPictureParams`
+
+Sets parameters for the Picture-In-Picture mode, accepting `PictureInPictureParams`
+
+```typescript
+ExpoPip.setPictureInPictureParams({
+  width: 300,
+  height: 400,
+  title: "My Video",
+  seamlessResizeEnabled: false,
+  autoEnterEnabled: true,
+});
+```
+
+### `enterPipMode`
+
+```ts
+ExpoPip.enterPipMode({ width: 200, height: 300 });
+```
+
+## Hooks
+
 ### Receive updates about Picture In Picture Mode status
 
 ```js
 const { isInPipMode } = ExpoPip.useIsInPip();
 ```
 
-### Enter and exit auto enter mode
+## Configuration Options
 
-```js
-ExpoPip.setAutoEnterEnabled(true);
+| Property                | Type                     | Default | Description                                    |
+| ----------------------- | ------------------------ | ------- | ---------------------------------------------- |
+| `width`                 | `number \| null`         | `null`  | Desired width                                  |
+| `height`                | `number \| null`         | `null`  | Desired height                                 |
+| `title`                 | `string \| null`         | `null`  | Title displayed on the PiP window.             |
+| `subtitle`              | `string \| null`         | `null`  | Subtitle for additional information.           |
+| `seamlessResizeEnabled` | `boolean \| null`        | `false` | Enables seamless resizing while in PiP.        |
+| `autoEnterEnabled`      | `boolean \| null`        | `false` | Enables automatic entry into PiP mode.         |
+| `sourceRectHint`        | `SourceRectHint \| null` | `null`  | Sets the source rectangle coordinates for PiP. |
+
+## Interfaces
+
+### `PictureInPictureParams`
+
+Defines configuration parameters for Picture-In-Picture mode.
+
+```typescript
+type PictureInPictureParams = {
+  width?: number | null;
+  height?: number | null;
+  title?: string | null; /
+  subtitle?: string | null;
+  sourceRectHint?: SourceRectHint;
+};
 ```
 
-### Set desired aspect ratio
+### `SourceRectHint`
 
-```js
-ExpoPip.setAspectRatio({ width: 200, height: 300 });
+Defines the bounds for the PiP window, improving transition smoothness.
+
+```typescript
+type SourceRectHint = {
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+};
 ```
-
-### Enter Picture In Picture mode with desired size
-
-```js
-ExpoPip.enterPipMode({ width: 200, height: 300 });
-```
-
-Params are opcional. Defaults values are 200 width and 300 height.
 
 # Contributing
 
