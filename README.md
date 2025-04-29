@@ -25,12 +25,12 @@ npx expo install expo-pip
 
 # Demo
 
-<a href="https://github.com/EdgarJMesquita/expo-pip"><img src="./docs/assets/new-demo.gif" width="360"></a>
+<a href="https://github.com/EdgarJMesquita/expo-pip"><img src="./docs/assets/demo.gif" width="360"></a>
 
 # Usage
 
 ```js
-import * as ExpoPip from "expo-pip";
+import ExpoPip from "expo-pip";
 import { useState } from "react";
 import { Button, StyleSheet, Text, View } from "react-native";
 
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
 # API
 
 ```js
-import * as ExpoPip from "expo-pip";
+import ExpoPip from "expo-pip";
 ```
 
 ## Methods
@@ -94,7 +94,7 @@ Sets parameters for the Picture-In-Picture mode, accepting `PictureInPicturePara
 ExpoPip.setPictureInPictureParams({
   width: 300,
   height: 400,
-  title: "My Video",
+  title: "My Cool Pip Feature",
   seamlessResizeEnabled: false,
   autoEnterEnabled: true,
 });
@@ -106,9 +106,15 @@ ExpoPip.setPictureInPictureParams({
 ExpoPip.enterPipMode({ width: 200, height: 300 });
 ```
 
+### `isAvailable`
+
+```ts
+ExpoPip.isAvailable();
+```
+
 ## Hooks
 
-### Receive updates about Picture In Picture Mode status
+### Receive updates about Picture In Picture Mode changes
 
 ```js
 const { isInPipMode } = ExpoPip.useIsInPip();

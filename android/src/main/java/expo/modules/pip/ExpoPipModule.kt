@@ -12,24 +12,24 @@ import expo.modules.kotlin.modules.ModuleDefinition
 const val moduleName = "ExpoPip"
 
 class ExpoPipModule : Module() {
-    override fun definition() = ModuleDefinition {
+  override fun definition() = ModuleDefinition {
+   
+    Name(moduleName)
 
-        Name(moduleName)
+    Events("onPipModeChange")
 
-        Events("onPictureInPictureModeChanged")
+    Function<Boolean>("isInPipMode", this@ExpoPipModule::isInPipMode)
 
-        Function<Boolean>("isInPipMode", this@ExpoPipModule::isInPipMode)
+    Function("setPictureInPictureParams", this@ExpoPipModule::setPictureInPictureParams)
 
-        Function("setPictureInPictureParams", this@ExpoPipModule::setPictureInPictureParams)
+    Function("enterPipMode", this@ExpoPipModule::enterPipMode)
 
-        Function("enterPipMode", this@ExpoPipModule::enterPipMode)
+    OnActivityEntersForeground(this@ExpoPipModule::sendPictureInPictureModeChanged)
 
-        OnActivityEntersForeground(this@ExpoPipModule::sendPictureInPictureModeChanged)
+    OnActivityEntersBackground(this@ExpoPipModule::sendPictureInPictureModeChanged)
+  }
 
-        OnActivityEntersBackground(this@ExpoPipModule::sendPictureInPictureModeChanged)
-    }
-
-    private fun buildPictureInPictureParams(options: ParamsRecord): PictureInPictureParams? {
+      private fun buildPictureInPictureParams(options: ParamsRecord): PictureInPictureParams? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val pictureInPictureParamsBuilder = PictureInPictureParams.Builder()
 
@@ -76,8 +76,8 @@ class ExpoPipModule : Module() {
             val isInPictureInPictureMode =
                 appContext.currentActivity?.isInPictureInPictureMode ?: false
             this@ExpoPipModule.sendEvent(
-                "onPictureInPictureModeChanged",
-                bundleOf("isInPictureInPictureMode" to isInPictureInPictureMode)
+                "onPipModeChange",
+                bundleOf("isInPipMode" to isInPictureInPictureMode)
             )
         }
     }
