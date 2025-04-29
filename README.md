@@ -23,6 +23,21 @@ For bare React Native projects, you must ensure that you have [installed and con
 npx expo install expo-pip
 ```
 
+### Make sure expo-pip plugin is listed in plugins list
+
+```json
+// app.json
+{
+  "expo": {
+    // ...
+    "plugins": [
+      // ...
+      "expo-pip"
+    ]
+  }
+}
+```
+
 # Demo
 
 <a href="https://github.com/EdgarJMesquita/expo-pip"><img src="./docs/assets/demo.gif" width="360"></a>
