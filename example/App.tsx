@@ -1,6 +1,5 @@
-import { format } from "date-fns";
-import * as ExpoPip from "expo-pip";
-import { useEffect, useState, useCallback } from "react";
+import ExpoPip, { SourceRectHint } from "expo-pip";
+import { useState, useCallback } from "react";
 import {
   LayoutChangeEvent,
   StatusBar,
@@ -9,21 +8,11 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import BackgroundTimer from "react-native-background-timer";
 
 export default function App() {
   const { isInPipMode } = ExpoPip.useIsInPip();
   const [automaticEnterEnabled, setAutomaticEnterEnabled] = useState(false);
-  const [sourceRectHint, setSourceRectHint] =
-    useState<ExpoPip.SourceRectHint>();
-  const [dateTime, setDateTime] = useState("00:00:00");
-
-  const updateDateTime = useCallback(() => {
-    const intervalId = BackgroundTimer.setInterval(() => {
-      setDateTime(format(new Date(), "HH:mm:ss"));
-    }, 1000);
-    return () => BackgroundTimer.clearInterval(intervalId);
-  }, []);
+  const [sourceRectHint, setSourceRectHint] = useState<SourceRectHint>();
 
   function onWatchLayout(event: LayoutChangeEvent) {
     if (sourceRectHint) return;
@@ -40,8 +29,6 @@ export default function App() {
       title: "Custom Clock",
     });
   }
-
-  useEffect(updateDateTime, []);
 
   const handlePipModeToggle = () => {
     ExpoPip.enterPipMode({
@@ -63,8 +50,8 @@ export default function App() {
     <View style={styles.container}>
       <StatusBar translucent backgroundColor="#000" />
       <View style={styles.watchContainer} onLayout={onWatchLayout}>
-        <Text style={[styles.hour, isInPipMode && styles.hourInPip]}>
-          {dateTime}
+        <Text style={[styles.title, isInPipMode && styles.inPipTitle]}>
+          {isInPipMode ? "You are in PIP mode 😎" : "Not in PIP mode"}
         </Text>
       </View>
       {!isInPipMode && (
@@ -101,13 +88,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 15,
   },
-  hour: {
+  title: {
     color: "white",
-    fontSize: 60,
     fontWeight: "bold",
+    fontSize: 32,
+    textAlign: "center",
   },
-  hourInPip: {
-    fontSize: 45,
+  inPipTitle: {
+    fontSize: 24,
   },
   button: {
     backgroundColor: "#2f2e3a",

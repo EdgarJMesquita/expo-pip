@@ -1,6 +1,6 @@
 {
   "platforms": ["android"],
-  "ios": {
+  "apple": {
     "modules": []
   },
   "android": {

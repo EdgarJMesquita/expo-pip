@@ -1,3 +1,11 @@
+export type PipModeChangeEvent = {
+  isInPipMode: boolean;
+};
+
+export type ExpoPipModuleEvents = {
+  onPipModeChange: (event: PipModeChangeEvent) => void;
+};
+
 export type SourceRectHint = {
   top: number;
   right: number;
@@ -52,12 +60,4 @@ export type PictureInPictureParams = {
    * aspect ratio is recommended for smooth transitions.
    */
   sourceRectHint?: SourceRectHint;
-};
-
-/**
- * @deprecated use `PictureInPictureParams`
- */
-export type AspectRatioProps = {
-  width: number;
-  height: number;
 };

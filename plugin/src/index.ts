@@ -1,6 +1,6 @@
 import { withAndroidManifest, ConfigPlugin } from "expo/config-plugins";
 
-const withMyApiKey: ConfigPlugin = (config) => {
+const supportsPictureInPicture: ConfigPlugin = (config) => {
   config = withAndroidManifest(config, (config) => {
     const { manifest } = config.modResults;
 
@@ -42,4 +42,4 @@ const withMyApiKey: ConfigPlugin = (config) => {
   return config;
 };
 
-export default withMyApiKey;
+export default supportsPictureInPicture;
