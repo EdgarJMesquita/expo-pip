@@ -26,6 +26,17 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "plugins": ["../plugin/build"]
+    "plugins": [
+      [
+        "../plugin/build",
+        {
+          "icons": [
+            "./assets/check.png",
+            "./assets/play_pause.png",
+            "./assets/heart.png"
+          ]
+        }
+      ]
+    ]
   }
 }

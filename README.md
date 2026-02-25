@@ -93,6 +93,77 @@ const styles = StyleSheet.create({
 });
 ```
 
+## Custom PiP Actions
+To use custom Picture-in-Picture actions, you must declare the icons in the plugin configuration inside your `app.json`.
+
+```json
+// app.json
+{
+  "expo": {
+    // ...
+   "plugins": [
+    // ..
+      [
+        "expo-pip",
+        {
+          "icons": [
+            "./assets/play_pause.png",
+          ]
+        }
+      ]
+    ]
+  }
+}
+```
+
+### Mapping `iconName`
+
+Once the icons are registered in the plugin configuration, reference them using `iconName` property.
+The `iconName` must match the icon file name passed in the plugin configuration.
+
+| File Name        | `iconName` Value |
+| ---------------- | ---------------- |
+| `play_pause.png` | `"play_pause"`   |
+
+
+
+```ts
+ExpoPip.setPictureInPictureParams({
+  actions: [
+    {
+      iconName: "play_pause",
+      action: "custom-play-pause-action",
+      title: "Custom Play/Pause Action",
+      description: "This is a description for the custom play/pause action",
+    },
+  ],
+});
+```
+
+### Listening to Custom Actions Press Event
+```ts
+useEffect(() => {
+  const subscription = ExpoPip.addEventListener(
+    "onPipActionPressed",
+    (event) => {
+      event.action; // custom-play-pause-action
+    },
+  );
+  return () => subscription.remove();
+}, []);
+```
+
+### Icons recommendations
+- Icons must be monochromatic white
+- Transparent background
+- Square image recommended
+- 96×96px recommended resolution
+- File name must:
+    - Be lowercase
+    - Use only letters, numbers and underscores
+
+#
+
 # API
 
 ```js
@@ -112,6 +183,14 @@ ExpoPip.setPictureInPictureParams({
   title: "My Cool Pip Feature",
   seamlessResizeEnabled: false,
   autoEnterEnabled: true,
+  actions: [
+    {
+      iconName: "play_pause",
+      action: "custom-play-pause-action",
+      title: "Custom Play/Pause Action",
+      description: "This is a description for the custom play/pause action",
+    },
+  ],
 });
 ```
 
@@ -125,6 +204,12 @@ ExpoPip.enterPipMode({ width: 200, height: 300 });
 
 ```ts
 ExpoPip.isAvailable();
+```
+
+### `getMaxNumPictureInPictureActions`
+
+```ts
+ExpoPip.getMaxNumPictureInPictureActions();
 ```
 
 ## Hooks
@@ -146,6 +231,7 @@ const { isInPipMode } = ExpoPip.useIsInPip();
 | `seamlessResizeEnabled` | `boolean \| null`        | `false` | Enables seamless resizing while in PiP.        |
 | `autoEnterEnabled`      | `boolean \| null`        | `false` | Enables automatic entry into PiP mode.         |
 | `sourceRectHint`        | `SourceRectHint \| null` | `null`  | Sets the source rectangle coordinates for PiP. |
+| `actions`        | `PipAction \| null` | `null`  | Sets the desired custom actions. |
 
 ## Interfaces
 
@@ -160,6 +246,7 @@ type PictureInPictureParams = {
   title?: string | null; /
   subtitle?: string | null;
   sourceRectHint?: SourceRectHint;
+  actions?: PipAction[]
 };
 ```
 
@@ -173,6 +260,19 @@ type SourceRectHint = {
   right: number;
   bottom: number;
   left: number;
+};
+```
+
+### `PipAction`
+
+Defines the custom actions to be shown in the PIP View.
+
+```typescript
+type PipAction = {
+  iconName: string;
+  action: string;
+  title?: string;
+  description?: string;
 };
 ```
 

@@ -1,4 +1,4 @@
-package expo.modules.pip
+package expo.modules.pip.records
 import expo.modules.kotlin.records.Record
 import expo.modules.kotlin.records.Field
 
@@ -23,4 +23,7 @@ internal class ParamsRecord:Record {
 
     @Field
     var sourceRectHint: SourceRectHintRecord? = null
+
+    @Field
+    var actions: List<ActionRecord> = emptyList()
 }

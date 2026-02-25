@@ -1,5 +1,5 @@
 import ExpoPip, { SourceRectHint } from "expo-pip";
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import {
   LayoutChangeEvent,
   StatusBar,
@@ -27,6 +27,26 @@ export default function App() {
       height: 100,
       seamlessResizeEnabled: false,
       title: "Custom Clock",
+      actions: [
+        {
+          iconName: "check",
+          action: "custom-check-action",
+          title: "Custom Check Action",
+          description: "This is a description for the custom check action",
+        },
+        {
+          iconName: "play_pause",
+          action: "custom-play-pause-action",
+          title: "Custom Play/Pause Action",
+          description: "This is a description for the custom play/pause action",
+        },
+        {
+          iconName: "heart",
+          action: "custom-heart-action",
+          title: "Custom Heart Action",
+          description: "This is a description for the custom heart action",
+        },
+      ],
     });
   }
 
@@ -37,6 +57,20 @@ export default function App() {
       sourceRectHint,
     });
   };
+
+  useEffect(() => {
+    const subscription = ExpoPip.addEventListener(
+      "onPipActionPressed",
+      (event) => {
+        console.log("Custom PiP action pressed!", event.action);
+      },
+    );
+    return () => subscription.remove();
+  }, []);
+
+  useEffect(() => {
+    console.log(ExpoPip.getMaxNumPictureInPictureActions());
+  }, []);
 
   const handleAutomaticEnterToggle = () => {
     setAutomaticEnterEnabled((prev) => {
