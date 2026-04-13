@@ -1,4 +1,4 @@
-package expo.modules.pip
+package expo.modules.pip.fragments
 
 import androidx.fragment.app.Fragment
 

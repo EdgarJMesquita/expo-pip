@@ -1,8 +1,9 @@
-package expo.modules.pip
-import expo.modules.kotlin.records.Record
-import expo.modules.kotlin.records.Field
+package expo.modules.pip.records
 
-internal class SourceRectHintRecord:Record {
+import expo.modules.kotlin.records.Field
+import expo.modules.kotlin.records.Record
+
+internal class SourceRectHintRecord: Record {
     @Field
     var left: Int = 0
 

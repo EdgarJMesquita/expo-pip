@@ -14,14 +14,15 @@ declare class IExpoPipModule extends NativeModule<ExpoPipModuleEvents> {
   isInPipMode(): boolean;
   setPictureInPictureParams(options: PictureInPictureParams): void;
   enterPipMode(options?: PictureInPictureParams): void;
+  getMaxNumPictureInPictureActions(): number | null;
 }
 
 function addPictureInPictureModeListener(
-  listener: (event: PipModeChangeEvent) => void
+  listener: (event: PipModeChangeEvent) => void,
 ) {
   if (!ExpoPipModule) {
     console.warn(
-      "expo-pip is not properly linked or it's not supported on this platform."
+      "expo-pip is not properly linked or it's not supported on this platform.",
     );
     return {
       remove: () => {},
@@ -57,6 +58,23 @@ class ExpoPip {
   }
   static isAvailable() {
     return Platform.OS === "android";
+  }
+  static getMaxNumPictureInPictureActions(): number | null {
+    return ExpoPipModule?.getMaxNumPictureInPictureActions() ?? null;
+  }
+  static addEventListener<EventName extends keyof ExpoPipModuleEvents>(
+    eventName: EventName,
+    listener: ExpoPipModuleEvents[EventName],
+  ) {
+    if (!ExpoPipModule) {
+      console.warn(
+        "expo-pip is not properly linked or it's not supported on this platform.",
+      );
+      return {
+        remove: () => {},
+      };
+    }
+    return ExpoPipModule.addListener(eventName, listener);
   }
 }
 
