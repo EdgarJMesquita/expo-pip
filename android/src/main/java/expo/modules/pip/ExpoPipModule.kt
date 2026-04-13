@@ -1,6 +1,5 @@
 package expo.modules.pip
 
-import android.annotation.SuppressLint
 import android.app.PendingIntent
 import android.app.PictureInPictureParams
 import android.app.RemoteAction
@@ -8,7 +7,9 @@ import android.content.Intent
 import android.graphics.Rect
 import android.graphics.drawable.Icon
 import android.os.Build
+import android.util.Log
 import android.util.Rational
+import androidx.annotation.RequiresApi
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentActivity
 import expo.modules.kotlin.modules.Module
@@ -17,6 +18,7 @@ import expo.modules.pip.fragments.PictureInPictureHelperFragment
 import expo.modules.pip.fragments.PictureInPictureHelperListener
 import expo.modules.pip.records.ActionRecord
 import expo.modules.pip.records.ParamsRecord
+import expo.modules.pip.utils.getResIdByIconName
 
 const val moduleName = "ExpoPip"
 
@@ -43,31 +45,6 @@ class ExpoPipModule : Module(), PictureInPictureHelperListener {
         OnDestroy(this@ExpoPipModule::onDestroy)
     }
 
-    private fun buildActions(actions: List<ActionRecord>): List<RemoteAction> {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            return emptyList()
-        }
-
-        val remoteActions = mutableListOf<RemoteAction>()
-
-        actions.forEach { action ->
-            if (!action.iconName.isNullOrEmpty() && !action.action.isNullOrEmpty()) {
-                val iconNameWithPrefix = "${ACTION_ICON_PREFIX}_${action.iconName}"
-                getIconFromResourceByName(iconNameWithPrefix)?.let { icon ->
-                    val remoteAction = RemoteAction(
-                        icon,
-                        action.title,
-                        action.description,
-                        createPipActionIntent(action.action!!)
-                    )
-                    remoteActions.add(remoteAction)
-                }
-            }
-        }
-
-        return remoteActions
-    }
-
     private fun buildPictureInPictureParams(options: ParamsRecord): PictureInPictureParams? {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val pictureInPictureParamsBuilder = PictureInPictureParams.Builder()
@@ -80,7 +57,7 @@ class ExpoPipModule : Module(), PictureInPictureHelperListener {
             }
 
             if (options.actions.isNotEmpty()) {
-                pictureInPictureParamsBuilder.setActions(buildActions(options.actions))
+                pictureInPictureParamsBuilder.setActions(buildRemoteActions(options.actions))
             }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
@@ -156,21 +133,44 @@ class ExpoPipModule : Module(), PictureInPictureHelperListener {
         return pendingIntent
     }
 
-    @SuppressLint("DiscouragedApi")
-    private fun getIconFromResourceByName(resourceName: String): Icon? {
-        var icon: Icon? = null
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun buildRemoteActions(actions: List<ActionRecord>): List<RemoteAction> {
+        val context = appContext.reactContext ?: return emptyList()
 
-        appContext.reactContext?.let { context ->
-            val resId = context.resources.getIdentifier(
-                resourceName,
-                "drawable",
-                context.packageName
-            )
+        val remoteActions = actions.mapNotNull {
+            val iconName = it.iconName
 
-            icon = Icon.createWithResource(context, resId)
+            if (iconName.isNullOrEmpty()) {
+                return@mapNotNull null
+            }
+
+            val resId = getResIdByIconName(context, iconName) ?: return@mapNotNull null
+
+            if (resId == 0) {
+                Log.e(
+                    "expo-pip", "Custom icon '${it.iconName}' not found in native app. " +
+                            "Make sure the icon file (e.g. 'custom_icon.png') is included in the expo-pip config plugin icons array in app config."
+                )
+                return@mapNotNull null
+            }
+
+            val icon = Icon.createWithResource(context, resId)
+
+
+            val action = it.action
+
+            if (action.isNullOrEmpty()) {
+                return@mapNotNull null
+            }
+
+            val intent = createPipActionIntent(action)
+
+            val remoteAction = RemoteAction(icon, it.title, it.description, intent)
+
+            return@mapNotNull remoteAction
         }
 
-        return icon
+        return remoteActions
     }
 
     private fun onCreate() {
@@ -199,7 +199,7 @@ class ExpoPipModule : Module(), PictureInPictureHelperListener {
         )
     }
 
-    fun attachFragment(){
+    fun attachFragment() {
         (appContext.currentActivity as? FragmentActivity)?.let { activity ->
             val fragment = PictureInPictureHelperFragment()
             fragment.setListener(this)
@@ -210,7 +210,7 @@ class ExpoPipModule : Module(), PictureInPictureHelperListener {
         }
     }
 
-    fun detachFragment(){
+    fun detachFragment() {
         (appContext.currentActivity as? FragmentActivity)?.let { activity ->
             val fragment = activity.supportFragmentManager
                 .findFragmentByTag(PictureInPictureHelperFragment.id)
@@ -224,7 +224,4 @@ class ExpoPipModule : Module(), PictureInPictureHelperListener {
         }
     }
 
-    companion object {
-        private const val ACTION_ICON_PREFIX = "expo_pip_action_icon"
-    }
 }
